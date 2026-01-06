@@ -1,45 +1,40 @@
-import { Stack, useRouter, useSegments } from "expo-router";
+import { auth } from "@/firebase";
+import { useRouter, useSegments } from "expo-router";
 import { onAuthStateChanged, User } from "firebase/auth";
-import React, { useEffect, useState } from "react";
-import { ActivityIndicator, View } from "react-native";
-import { auth } from "../firebase";
+import { useEffect, useState } from "react";
+
 
 export default function RootLayout() {
   const [user, setUser] = useState<User | null>(null);
-  const [initializing, setInitializing] = useState(true);
+  const [loading, setLoading] = useState(true);
 
   const router = useRouter();
-  const segments = useSegments(); // e.g. ["login"] or ["workout", "123"]
+  const segments = useSegments();
 
   useEffect(() => {
-    const unsub = onAuthStateChanged(auth, (u) => {
+    const unsubscribe = onAuthStateChanged(auth, (u) => {
       setUser(u);
-      setInitializing(false);
+      setLoading(false);
     });
-    return unsub;
+    return unsubscribe;
   }, []);
 
-  useEffect(() => {
-    if (initializing) return;
+ useEffect(() => {
+  if (loading) return;
 
-    const inAuthScreen = segments[0] === "login" || segments[0] === "register";
+  const firstSegment = segments[0];
 
-    if (!user && !inAuthScreen) {
-      router.replace("/login");
-    }
+  const inAuthRoute =
+    firstSegment === "login" || firstSegment === "register";
 
-    if (user && inAuthScreen) {
-      router.replace("/");
-    }
-  }, [user, initializing, segments, router]);
-
-  if (initializing) {
-    return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <ActivityIndicator />
-      </View>
-    );
+  if (!user && !inAuthRoute) {
+    router.replace("/login");
+    return;
   }
 
-  return <Stack screenOptions={{ headerShown: false }} />;
+  if (user && inAuthRoute) {
+    router.replace("/");
+    return;
+  }
+}, [user, loading, segments, router]);
 }

@@ -1,16 +1,16 @@
+import { auth, db } from "@/firebase";
 import { router } from "expo-router";
 import { addDoc, collection, deleteDoc, doc, onSnapshot, orderBy, query, serverTimestamp } from "firebase/firestore";
 import React, { useEffect, useMemo, useState } from "react";
 import {
-    ActivityIndicator,
-    Alert,
-    FlatList,
-    Pressable,
-    Text,
-    TextInput,
-    View,
+  ActivityIndicator,
+  Alert,
+  FlatList,
+  Pressable,
+  Text,
+  TextInput,
+  View,
 } from "react-native";
-import { auth, db } from "../../firebase";
 
 type Workout = {
   id: string;
@@ -71,7 +71,7 @@ export default function WorkoutsScreen() {
       setName("");
       // Go to detail page (we'll build it next)
     router.push({
-        pathname: "/workout/[workoutId]",
+        pathname: "/workout/[workoutId]/[workoutId]",
         params: { workoutId: ref.id },
 });
     } catch (err: any) {
@@ -158,7 +158,7 @@ export default function WorkoutsScreen() {
           renderItem={({ item }) => (
             <Pressable
               onPress={() => router.push({
-                pathname: "/workout/[workoutId]",
+                pathname: "/workout/[workoutId]/[workoutId]",
                 params: { workoutId: item.id },
             })}
               onLongPress={() => confirmDelete(item.id, item.name)}

@@ -1,8 +1,8 @@
+import { auth } from "@/firebase";
 import { router } from "expo-router";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import React, { useState } from "react";
 import { ActivityIndicator, Pressable, Text, TextInput, View } from "react-native";
-import { auth } from "../firebase";
 
 export default function Register() {
   const [email, setEmail] = useState("");

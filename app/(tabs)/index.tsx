@@ -1,8 +1,8 @@
+import { auth } from "@/firebase";
 import { router } from "expo-router";
 import { signOut } from "firebase/auth";
 import React, { useState } from "react";
 import { ActivityIndicator, Pressable, Text, View } from "react-native";
-import { auth } from "../firebase";
 
 export default function Index() {
   const [loading, setLoading] = useState(false);
