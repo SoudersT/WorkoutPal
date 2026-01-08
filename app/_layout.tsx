@@ -22,23 +22,25 @@ export default function RootLayout() {
   useEffect(() => {
     if (loading) return;
 
-    const firstSegment = segments[0]; // e.g. "login", "register", "(tabs)", etc.
+    const first = segments?.[0] ?? ""; // "", "login", "register", "(tabs)", etc.
 
-    const inAuthRoute =
-      firstSegment === "login" || firstSegment === "register";
+    // If your auth screens are at /login and /register (root-level)
+    const inAuthRoute = first === "login" || first === "register";
+
+    // If your logged-in app lives in a route group like /(tabs)
+    const inAppRoute = first === "(tabs)";
 
     if (!user && !inAuthRoute) {
       router.replace("/login");
       return;
     }
 
-    if (user && inAuthRoute) {
-      router.replace("/");
+    if (user && (inAuthRoute || !inAppRoute)) {
+      router.replace("/(tabs)");
       return;
     }
-  }, [user, loading, segments, router]);
+  }, [user, loading, segments]);
 
-  // IMPORTANT: you must return something
   if (loading) {
     return (
       <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
@@ -47,6 +49,5 @@ export default function RootLayout() {
     );
   }
 
-  // IMPORTANT: expo-router needs Stack/Slot rendered
   return <Stack screenOptions={{ headerShown: false }} />;
 }
